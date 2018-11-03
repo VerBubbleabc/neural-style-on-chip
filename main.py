@@ -5,7 +5,7 @@ import torchvision as tv
 import torchnet as tnt
 
 from torch.utils import data
-from transformer_net import Transformer_2layer
+from transformer_net import Transformer_3layer
 import utils
 from PackedVGG import Vgg16
 from torch.nn import functional as F
@@ -61,7 +61,7 @@ def train(**kwargs):
     dataloader = data.DataLoader(dataset, opt.batch_size)
 
     # 转换网络
-    transformer = Transformer_2layer()
+    transformer = Transformer_3layer()
     if opt.model_path:
         transformer.load_state_dict(t.load(opt.model_path, map_location=lambda _s, _: _s))
     transformer.to(device)
@@ -136,7 +136,7 @@ def train(**kwargs):
 
         # 保存visdom和模型
         vis.save([opt.env])
-        t.save(transformer.state_dict(), 'checkpoints/%s_style_2layer.pth' % epoch)
+        t.save(transformer.state_dict(), 'checkpoints/%s_style_3layer.pth' % epoch)
 
 
 if __name__ == '__main__':

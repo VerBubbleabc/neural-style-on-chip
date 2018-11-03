@@ -45,9 +45,9 @@ class Transformer(nn.Module):
         return t
 
 
-class Transformer_2layer(nn.Module):
+class Transformer_4layer(nn.Module):
     def __init__(self):
-        super(Transformer_2layer, self).__init__()
+        super(Transformer_4layer, self).__init__()
         self.conv1 = nn.Conv2d(3, 32, 3, padding=1)
         self.relu1 = nn.ReLU(inplace=True)
         self.conv2 = nn.Conv2d(32, 64, 1)
@@ -66,4 +66,23 @@ class Transformer_2layer(nn.Module):
         t = self.relu3(t)
         t = self.conv4(t)
         t = self.relu4(t) + x
+        return t
+
+class Transformer_3layer(nn.Module):
+    def __init__(self):
+        super(Transformer_3layer, self).__init__()
+        self.conv1 = nn.Conv2d(3, 32, 3, padding=1)
+        self.relu1 = nn.ReLU(inplace=True)
+        self.conv2 = nn.Conv2d(32, 32, 1)
+        self.relu2 = nn.ReLU(inplace=True)
+        self.conv3 = nn.Conv2d(32, 3, 3, padding=1)
+        self.relu3 = nn.ReLU(inplace=True)
+
+    def forward(self, x):
+        t = self.conv1(x)
+        t = self.relu1(t)
+        t = self.conv2(t)
+        t = self.relu2(t)
+        t = self.conv3(t)
+        t = self.relu3(t) + x
         return t
