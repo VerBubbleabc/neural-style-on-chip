@@ -61,7 +61,7 @@ def train(**kwargs):
     dataloader = data.DataLoader(dataset, opt.batch_size)
 
     # 转换网络
-    transformer = Transformer()
+    transformer = Transformer().half()
     if opt.model_path:
         transformer.load_state_dict(t.load(opt.model_path, map_location=lambda _s, _: _s))
     transformer.to(device)
@@ -86,6 +86,7 @@ def train(**kwargs):
         features_style = vgg(style)
         gram_style = [utils.gram_matrix(y) for y in features_style]
 
+        
     # 损失统计
     style_meter = tnt.meter.AverageValueMeter()
     content_meter = tnt.meter.AverageValueMeter()
@@ -98,12 +99,12 @@ def train(**kwargs):
 
             # 训练
             optimizer.zero_grad()
-            x = x.to(device)
+            x = x.half().to(device)
             y = transformer(x)
             y = utils.normalize_batch(y)
             x = utils.normalize_batch(x)
-            features_y = vgg(y)
-            features_x = vgg(x)
+            features_y = vgg(y.float())
+            features_x = vgg(x.float())
 
             # content loss
             content_loss = opt.content_weight * F.mse_loss(features_y.relu2_2, features_x.relu2_2)
@@ -131,12 +132,12 @@ def train(**kwargs):
                 vis.plot('content_loss', content_meter.value()[0])
                 vis.plot('style_loss', style_meter.value()[0])
                 # 因为x和y经过标准化处理(utils.normalize_batch)，所以需要将它们还原
-                vis.img('output', (y.data.cpu()[0] * 0.225 + 0.45).clamp(min=0, max=1))
-                vis.img('input', (x.data.cpu()[0] * 0.225 + 0.45).clamp(min=0, max=1))
+                vis.img('output', (y.data.cpu()[0].float() * 0.225 + 0.45).clamp(min=0, max=1))
+                vis.img('input', (x.data.cpu()[0].float() * 0.225 + 0.45).clamp(min=0, max=1))
 
         # 保存visdom和模型
         vis.save([opt.env])
-        t.save(transformer.state_dict(), 'checkpoints/%s_style.pth' % epoch)
+        t.save(transformer.state_dict(), 'checkpoints/%s_style_half.pth' % epoch)
 
 
 if __name__ == '__main__':
