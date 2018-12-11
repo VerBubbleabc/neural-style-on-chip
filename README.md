@@ -6,6 +6,9 @@
 - 4、算法优化
 - 5、总结与反思
 
+This project is done by [@DTennant](https://github.com/DTennant) and
+[@verBubble](https://github.com/verBubble)
+
 ### 1、概要
 
 近年来，随着深度学习的兴起，这项技术开始越来越多的运用在各个领域。
